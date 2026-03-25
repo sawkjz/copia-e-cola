@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Colar Imagem</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #preview {
+      margin-top: 20px;
+      max-width: 500px;
+      border: 2px dashed #ccc;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Ctrl + V pra colar a imagem</h2>
+
+<div id="preview">Nenhuma imagem ainda...</div>
+
+<script>
+document.addEventListener('paste', (event) => {
+  const items = event.clipboardData.items;
+
+  for (let item of items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      const url = URL.createObjectURL(file);
+
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.maxWidth = '100%';
+
+      const preview = document.getElementById('preview');
+      preview.innerHTML = '';
+      preview.appendChild(img);
+    }
+  }
+});
+</script>
+
+</body>
+</html>
