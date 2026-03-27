@@ -6,7 +6,7 @@
 
     <style>
       body {
-        font-family: Arial;
+        font-family: "Comic Sans MS", "Comic Sans", cursive;
         margin: 0;
         height: 100vh;
         overflow-x: hidden;
@@ -85,6 +85,9 @@
         top: 5px;
         max-width: 220px;
         height: auto;
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-drag: none;
       }
 
       .boxes {
@@ -151,6 +154,157 @@
         max-width: 90%;
         max-height: 90%;
       }
+
+      .profile-toggle {
+        position: fixed;
+        top: 24px;
+        right: 22px;
+        width: 52px;
+        height: 20px;
+        border: 0;
+        background: #5b4141;
+        cursor: pointer;
+        z-index: 15;
+      }
+
+      .profile-toggle::after {
+        content: "<";
+        color: #fbdce4;
+        font-size: 12px;
+      }
+
+      .profile-toggle.open::after {
+        content: ">";
+      }
+
+      .profile-panel {
+        position: fixed;
+        top: 53px;
+        right: -340px;
+        width: 290px;
+        min-height: 166px;
+        padding: 18px 16px;
+        background: rgba(91, 65, 65, 0.97);
+        border: 1px solid #fbdce4;
+        box-sizing: border-box;
+        transition: right 0.35s ease;
+        z-index: 14;
+      }
+
+      .profile-panel.open {
+        right: 22px;
+      }
+
+      .profile-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .profile-image-wrap {
+        position: relative;
+        width: 84px;
+        height: 84px;
+        flex-shrink: 0;
+      }
+
+      .profile-image {
+        width: 73px;
+        height: 73px;
+        top: 5px;
+        left: 5px;
+        border: 2px solid #fbdce4;
+        box-sizing: border-box;
+        object-fit: cover;
+        position: relative;
+        z-index: 1;
+      }
+
+      .profile-frame {
+        position: absolute;
+        left: -1px;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .profile-cover {
+        position: absolute;
+        top: -8px;
+        left: 8px;
+        width: auto;
+        height: auto;
+        max-width: none;
+        max-height: none;
+        border: none;
+        object-fit: fill;
+        z-index: 3;
+      }
+
+      .github-user {
+        color: #fbdce4;
+        text-decoration: none;
+        font-size: 18px;
+        letter-spacing: 0.02em;
+      }
+
+      .github-user:hover {
+        text-decoration: underline;
+      }
+
+      .profile-decor {
+        position: relative;
+        top: 35px;
+        color: #fbdce4;
+        left: 6px;
+        font-size: 12px;
+        letter-spacing: 10px;
+      }
+
+      .stars-marquee {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 25px;
+        height: 24px;
+        overflow: hidden;
+        letter-spacing: 50px;
+        background: rgba(251, 220, 228, 0.66);
+        z-index: 10;
+      }
+
+      .stars-track {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        display: inline-flex;
+        white-space: nowrap;
+        min-width: 100%;
+        animation: starScroll 25s linear infinite;
+      }
+
+      .stars-track.alt {
+        left: 100%;
+      }
+
+      .stars-track span {
+        color: #5b4141;
+        font-size: 9px;
+        margin: 0 2px;
+      }
+
+      @keyframes starScroll {
+        from {
+          transform: translate(0, -50%);
+        }
+        to {
+          transform: translate(-100%, -50%);
+        }
+      }
     </style>
   </head>
 
@@ -161,8 +315,44 @@
 
     <div class="logo-area">
       <div class="logo-rect"></div>
-      <img src="img/logo_1.png" alt="Logo" class="logo" />
+      <img src="img/logo_1.png" alt="Logo" class="logo" draggable="false" />
     </div>
+
+    <button class="profile-toggle" id="profileToggle" aria-label="Abrir perfil"></button>
+
+    <aside class="profile-panel" id="profilePanel">
+      <div class="profile-top">
+        <div class="profile-image-wrap">
+          <img
+            class="profile-image"
+            src="./img/isa_pitiquinha.png"
+            alt="Foto de perfil"
+          />
+          <img
+            class="profile-frame"
+            src="https://64.media.tumblr.com/1ae224adfd9888512a858ed3dd35e6c1/81d93f418261215e-d3/s250x400/e3113c0295a71843cbe8c034da1e9b2165694491.gifv"
+            alt="Borda decorativa"
+            draggable="false"
+          />
+          <img
+            class="profile-cover"
+            src="https://64.media.tumblr.com/8ac0ab2010d458d953049885ac31f879/1d7dff280dffe7e9-9a/s75x75_c1/7d34e58c97a33ad5b7ba485c6fecc30c649dc7c6.gifv"
+            alt="Mini cover"
+          />
+        </div>
+
+        <a
+          class="github-user"
+          href="https://github.com/sawkjz"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          sawkjz
+        </a>
+      </div>
+
+      <div class="profile-decor">✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦</div>
+    </aside>
 
     <div class="container">
       <div class="boxes" id="boxes">
@@ -176,10 +366,21 @@
       <img id="modalImg" />
     </div>
 
+    <div class="stars-marquee" aria-hidden="true">
+      <div class="stars-track">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+      </div>
+      <div class="stars-track alt">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+      </div>
+    </div>
+
     <script>
       const boxesContainer = document.getElementById("boxes");
       const addBtn = document.getElementById("addBtn");
       const maxBoxes = 4;
+      const profileToggle = document.getElementById("profileToggle");
+      const profilePanel = document.getElementById("profilePanel");
 
       const bg = document.getElementById("bg");
 
@@ -235,7 +436,6 @@
         removeBtn.addEventListener("click", (e) => {
           e.stopPropagation();
           newBox.remove();
-          gerarBackground();
         });
 
         newBox.appendChild(removeBtn);
@@ -267,8 +467,7 @@
             if (removeBtn) emptyBox.appendChild(removeBtn);
 
             emptyBox.appendChild(img);
-
-            gerarBackground();
+            event.preventDefault();
           }
         }
       });
@@ -278,7 +477,7 @@
       const modalImg = document.getElementById("modalImg");
 
       document.addEventListener("click", (e) => {
-        if (e.target.tagName === "IMG") {
+        if (e.target.tagName === "IMG" && e.target.closest(".box")) {
           modalImg.src = e.target.src;
           modal.style.display = "flex";
         }
@@ -286,6 +485,11 @@
 
       modal.addEventListener("click", () => {
         modal.style.display = "none";
+      });
+
+      profileToggle.addEventListener("click", () => {
+        profilePanel.classList.toggle("open");
+        profileToggle.classList.toggle("open");
       });
     </script>
   </body>
